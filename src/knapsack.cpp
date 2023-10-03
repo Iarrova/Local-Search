@@ -3,14 +3,11 @@
 #include <fstream>
 #include <iostream>
 
-#include "knapsack.h"
-#include "rng.h"
+#include "knapsack.hpp"
+#include "rng.hpp"
 
 void KnapsackInstance::load_instance(std::string filename){
 	std::ifstream infile(filename);
-
-	int counter = 0;
-	float value, weight;
 
 	// Get the knapsack instance values from the first line of the file
 	std::string first_line;
@@ -24,7 +21,8 @@ void KnapsackInstance::load_instance(std::string filename){
 	NUMBER_OF_ITEMS = knapsack_instance_values[0];
 	MAX_WEIGHT = knapsack_instance_values[1];
 	
-
+	int counter = 0;
+	float value, weight;
 	// Read file line by line and saving values to items array
 	while(infile >> value >> weight){
 		Item item;
@@ -41,21 +39,22 @@ void KnapsackInstance::load_instance(std::string filename){
 
 State::State() = default;
 
-State::State(int number_of_items){
+State::State(KnapsackInstance knapsack_instance){
 	// Initialize state as all 0's
-	std::vector<int> state(number_of_items, 0);
+	this->knapsack_instance = knapsack_instance;
+	std::vector<int> state(knapsack_instance.NUMBER_OF_ITEMS, 0);
 	this->state = state;
 };
 
-float State::evaluate_state(KnapsackInstance knapsack_instance){
+float State::evaluate_state(){
 	int value = 0;
 	int weight = 0;
 
 	// Calculate capacity and value of the current state knapsack
-	for(long unsigned i=0; i<knapsack_instance.items.size(); i++){
+	for(long unsigned i=0; i<state.size(); i++){
 		// Check if the item is currently in the knapsack
 		if (state[i] == 1){
-			// If it is, we consider its value and weight 
+			// If it is, we consider its value and weight
 			value = value + knapsack_instance.items[i].value;
 			weight = weight + knapsack_instance.items[i].weight;
 		};
@@ -74,41 +73,35 @@ std::vector<State> State::get_neighbours(){
 	// Iterate over size to generate all possible neighbours
 	for (long unsigned i=0; i<state.size(); i++){
 		neighbours[i].state = state;							// Copy state to neighbours
+		neighbours[i].knapsack_instance = knapsack_instance;
 		neighbours[i].state[i] = 1 - neighbours[i].state[i];	// Bit flip a single item
 	};
 	return neighbours;
 };
 
-Knapsack::Knapsack() = default;
-
-Knapsack::Knapsack(int number_of_items){
-	this->value = 0;
-	this->weight = 0;
-	State state(number_of_items);
-	this->state = state;
-};
-
-void Knapsack::generate_random_state(KnapsackInstance knapsack_instance){
-	RNG rng(knapsack_instance.SEED);
+void State::generate_random_state(RNG &rng){
 	int random_number;
 	while(true){
-		for (long unsigned i=0; i<state.state.size(); i++){
+		for (long unsigned i=0; i<state.size(); i++){
 			// Get a random number integer number in the range [0, 1]
 			random_number = rng.get_random_number(1);
-			state.state[i] = random_number;
+			state[i] = random_number;
 		};
 		// Check if solution is factible
-		if (state.evaluate_state(knapsack_instance) >= 0){
-			// If it is factible, update the Knapsack values
-			value = 0;
-			weight = 0;
-			for (long unsigned i=0; i<state.state.size(); i++){
-				if (state.state[i] == 1){ 
-					value = value + knapsack_instance.items[i].value;
-					weight = weight + knapsack_instance.items[i].weight;
-				};
-			};
+		if (evaluate_state() >= 0){
 			return;
 		};
 	};
+};
+
+State State::generate_random_neighbour(RNG &rng){
+	State neighbour_state(knapsack_instance);
+	neighbour_state.state = state;
+    while(true){
+        int random_number = rng.get_random_number(knapsack_instance.NUMBER_OF_ITEMS - 1);
+        neighbour_state.state[random_number] = 1 - neighbour_state.state[random_number];
+        if(neighbour_state.evaluate_state() >= 0){
+            return neighbour_state;
+        };
+    };
 };

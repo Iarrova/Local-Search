@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "knapsack.h"
-#include "greedy.h"
-#include "hill_climbing.h"
-#include "simulated_annealing.h"
-#include "tabu_search.h"
-#include "rng.h"
+#include "src/knapsack.hpp"
+#include "src/greedy.hpp"
+#include "src/hill_climbing.hpp"
+#include "src/simulated_annealing.hpp"
+#include "src/tabu_search.hpp"
+#include "src/rng.hpp"
 
 int main(int argc, char *argv[]){
 	if (argc != 3){
@@ -14,7 +14,6 @@ int main(int argc, char *argv[]){
 	};
 	std::string PATH = argv[1];
 	int SEED = atoi(argv[2]); 
-	std::cout << "Argument [1]:" << PATH << " argument [2]: " << SEED << "\n";
 
 	// Load the Knapsack Items information
 	KnapsackInstance knapsack_instance;
@@ -26,20 +25,17 @@ int main(int argc, char *argv[]){
 
 	// Greedy	
 	std::cout << "------- Greedy -------" << "\n";
-	Knapsack knapsack_1(knapsack_instance.NUMBER_OF_ITEMS);
-	GreedySolver greedy_solver(knapsack_instance, knapsack_1);	
+	GreedySolver greedy_solver(knapsack_instance);	
 	greedy_solver.solve();
 
 	// Hill-Climbing Best Improvement
 	std::cout << "\n------- Hill-Climbing (Best) -------" << "\n";
-	Knapsack knapsack_2(knapsack_instance.NUMBER_OF_ITEMS);
-	HillClimbingSolver hill_climbing_solver_best(knapsack_instance, knapsack_2);
+	HillClimbingSolver hill_climbing_solver_best(knapsack_instance);
 	hill_climbing_solver_best.solve("Best-Improvement");
 
 	// Hill-Climbing First Improvement
 	std::cout << "\n------- Hill-Climbing (First) -------" << "\n";
-	Knapsack knapsack_3(knapsack_instance.NUMBER_OF_ITEMS);
-	HillClimbingSolver hill_climbing_solver_first(knapsack_instance, knapsack_3);
+	HillClimbingSolver hill_climbing_solver_first(knapsack_instance);
 	hill_climbing_solver_first.solve("First-Improvement");
 
 	// Simulated Annealing
@@ -47,17 +43,13 @@ int main(int argc, char *argv[]){
 	int number_of_steps = 200;
 	int initial_temperature = 100;
 	float temperature_factor = 0.97;
-	Knapsack knapsack_4(knapsack_instance.NUMBER_OF_ITEMS);
-	RNG rng(knapsack_instance.SEED);
-	SimulatedAnnealingSolver simulated_annealing_solver(knapsack_instance, knapsack_4, rng, number_of_steps, initial_temperature, temperature_factor);
+	SimulatedAnnealingSolver simulated_annealing_solver(knapsack_instance, number_of_steps, initial_temperature, temperature_factor);
 	simulated_annealing_solver.solve();
 
 	std::cout << "\n------- Tabu Search -------" << "\n";
 	int number_of_steps_tabu = 200;
 	int tabu_list_length = 5;
-	Knapsack knapsack_5(knapsack_instance.NUMBER_OF_ITEMS);
-	RNG rng_1(knapsack_instance.SEED);
-	TabuSearchSolver tabu_search_solver(knapsack_instance, knapsack_5, rng_1, number_of_steps_tabu, tabu_list_length);
+	TabuSearchSolver tabu_search_solver(knapsack_instance, number_of_steps_tabu, tabu_list_length);
 	simulated_annealing_solver.solve();
 
 	return 0;

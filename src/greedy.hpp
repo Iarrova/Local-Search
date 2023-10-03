@@ -1,17 +1,16 @@
 #pragma once
-/*
- * greedy.h
- * Includes all definitions to solve the Knapsack problem using a Greedy method
- */
-#ifndef GREEDY_H_
-#define GREEDY_H_
 
-#include "knapsack.h"
+#ifndef GREEDY_HPP_
+#define GREEDY_HPP_
+
+#include "knapsack.hpp"
 
 class GreedySolver{
     private:
         KnapsackInstance knapsack_instance;
-        Knapsack knapsack;
+        State state;
+        float value = 0;
+        float weight = 0;
 
         /**
          * Myopic function for the greedy approach.
@@ -22,10 +21,12 @@ class GreedySolver{
         Item myopic_function();
 
     public:
-        GreedySolver(KnapsackInstance knapsack_instance, Knapsack knapsack);
+        GreedySolver(const KnapsackInstance& knapsack_instance);
 
         /**
          * Solves the 0/1 Knapsack problem using a Greedy approach
+         * 
+         * @returns The State of the solution found
         */
         void solve();
 };
