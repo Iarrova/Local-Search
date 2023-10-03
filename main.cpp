@@ -6,6 +6,7 @@
 #include "src/hill_climbing.hpp"
 #include "src/simulated_annealing.hpp"
 #include "src/tabu_search.hpp"
+#include "src/genetic.hpp"
 #include "src/rng.hpp"
 
 int main(int argc, char *argv[]){
@@ -65,6 +66,17 @@ int main(int argc, char *argv[]){
 	TabuSearchSolver tabu_search_solver(knapsack_instance, number_of_steps_tabu, tabu_list_length);
 	start = std::chrono::high_resolution_clock::now();	
 	tabu_search_solver.solve();
+	stop = std::chrono::high_resolution_clock::now();
+	std::cout << "[INFO] Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count() << " microseconds\n\n";
+
+	std::cout << "\n------- Genetic Algorithm -------" << "\n";
+	int population_size = 20;
+	int maximum_generations = 30;
+	float crossover_probability = 0.8;
+	float mutation_probability = 0.05;
+	GeneticSolver genetic_solver(knapsack_instance, population_size, maximum_generations, crossover_probability, mutation_probability);
+	start = std::chrono::high_resolution_clock::now();	
+	genetic_solver.solve();
 	stop = std::chrono::high_resolution_clock::now();
 	std::cout << "[INFO] Time taken: " << std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count() << " microseconds\n\n";
 

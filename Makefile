@@ -1,7 +1,7 @@
 all: knapsack
 
-knapsack: main.o knapsack.o greedy.o hill_climbing.o simulated_annealing.o rng.o tabu_search.o
-	g++ -o knapsack build/main.o build/knapsack.o build/greedy.o build/hill_climbing.o build/simulated_annealing.o build/tabu_search.o build/rng.o 
+knapsack: main.o knapsack.o greedy.o hill_climbing.o simulated_annealing.o tabu_search.o genetic.o rng.o 
+	g++ -o knapsack build/main.o build/knapsack.o build/greedy.o build/hill_climbing.o build/simulated_annealing.o build/tabu_search.o build/rng.o build/genetic.o 
 
 main.o: main.cpp
 	g++ -c main.cpp -o ./build/main.o
@@ -20,6 +20,9 @@ simulated_annealing.o: src/simulated_annealing.cpp
 
 tabu_search.o: src/tabu_search.cpp
 	g++ -c src/tabu_search.cpp -o ./build/tabu_search.o
+
+genetic.o: src/genetic.cpp
+	g++ -c src/genetic.cpp -o ./build/genetic.o
 
 rng.o: src/rng.cpp
 	g++ -c src/rng.cpp -o ./build/rng.o
