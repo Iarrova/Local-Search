@@ -14,8 +14,7 @@ Item GreedySolver::myopic_function(){
 	// Iterate over all items of the problem
 	// We search for the highest value that we **can** include (not already in, and weight fits)
 	for (long unsigned i=0; i<knapsack_instance.items.size(); i++){
-		if((weight + knapsack_instance.items[i].weight <= knapsack_instance.MAX_WEIGHT) &&
-			(state.state[i] == 0)){
+		if((weight + knapsack_instance.items[i].weight <= knapsack_instance.MAX_WEIGHT) && (state.state[i] == 0)){
 			// Look for the highest value item
 			if(knapsack_instance.items[i].value > best_item.value){
 				best_item = knapsack_instance.items[i];
@@ -33,7 +32,8 @@ void GreedySolver::solve(){
 
 		// Check if program has finished
 		if(best_item.index == -1){
-			std::cout << "Final Value: " << value << " Final weight: " << weight << "\n";
+			std::cout << "[RESULT] Final value: " << value << " final weight: " << weight << "\n";
+			std::cout << "[RESULT] Final state: " << state << "\n";
 			return;
 		};
 
@@ -41,6 +41,7 @@ void GreedySolver::solve(){
 		value = value + best_item.value;
 		weight = weight + best_item.weight;
 		state.state[best_item.index] = 1;
-		std::cout << "Knapsack value: " << value << " and weight: " << weight << "\n";
+		//std::cout << "[INFO] Picked item with index: " << best_item.index << " value: " << best_item.value << " and weight: " << best_item.weight << "\n";
+		//std::cout << "[INFO] Knapsack value: " << value << " and weight: " << weight << "\n\n";
 	};
 };

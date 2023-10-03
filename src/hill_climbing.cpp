@@ -16,43 +16,42 @@ HillClimbingSolver::HillClimbingSolver(const KnapsackInstance& knapsack_instance
 void HillClimbingSolver::best_improvement(){
 	// Begin with a random solution
 	state.generate_random_state(rng);
-	//std::cout << "Generated random knapsack value: " << knapsack.value << " and weight: " << knapsack.weight << "\n";
+	//std::cout << "[INFO] Generated random state: " << state << "\n"; 
+	//std::cout << "[INFO] Initial state value: " << state.evaluate_state()[0] << " and weight: " << state.evaluate_state()[1] << "\n\n";
 	State current_state = state;
 	std::vector<State> neighbours;
 	while(true){
 		neighbours = current_state.get_neighbours(); 
 		State next_state;
 		float next_evaluation = -1;
-		//int next_state_index = -1;
 
 		// Search all neighbours for the best node
 		for (long unsigned i=0; i<neighbours.size(); i++){
 			// Check if the new neighbour is better
-			if (neighbours[i].evaluate_state() > next_evaluation){
+			if (neighbours[i].evaluate_state()[0] > next_evaluation){
 				// Save the neighbour as the new state and calculate new evaluation
 				next_state = neighbours[i];
-				next_evaluation = neighbours[i].evaluate_state();
-				//next_state_index = i;
+				next_evaluation = neighbours[i].evaluate_state()[0];
 			};
 		};
 		// If the next evaluation is lower than our current state, we have reached an optimum
 		// This is because we iterated over all neighbours above and we couldn't find a better neighbour
-		if (next_evaluation <= current_state.evaluate_state()){
-			//std::cout << "Final Value: " << knapsack.value << " Final weight: " << knapsack.weight << "\n";
-			std::cout << "Knapsack value: " << current_state.evaluate_state() << "\n";
+		if (next_evaluation <= current_state.evaluate_state()[0]){
+			std::cout << "[RESULT] Final value: " << current_state.evaluate_state()[0] << " final weight: " << current_state.evaluate_state()[1] << "\n";
+			std::cout << "[RESULT] Final state: " << current_state << "\n";
 			return;
 		};
 		current_state = next_state;
-		//knapsack.value = knapsack.value + knapsack_instance.items[next_state_index].value;
-		//knapsack.weight = knapsack.weight + knapsack_instance.items[next_state_index].weight;
-		//std::cout << "Knapsack value: " << knapsack.value << " and weight: " << knapsack.weight << "\n";
+		//std::cout << "[INFO] Moved to state: " << current_state << "\n";
+		//std::cout << "[INFO] New state value: " << current_state.evaluate_state()[0] << " and weight: " << current_state.evaluate_state()[1] << "\n\n";
 	};
 };
 
 void HillClimbingSolver::first_improvement(){
 	// Begin with a random solution
 	state.generate_random_state(rng);
-	//std::cout << "Generated random knapsack value: " << knapsack.value << " and weight: " << knapsack.weight << "\n";
+	//std::cout << "[INFO] Generated random state: " << state << "\n"; 
+	//std::cout << "[INFO] Initial state value: " << state.evaluate_state()[0] << " and weight: " << state.evaluate_state()[1] << "\n\n";
 
 	State current_state = state;
 	std::vector<State> neighbours;
@@ -72,13 +71,12 @@ void HillClimbingSolver::first_improvement(){
 		};
 		// If no better neighbour was found, we exit
 		if (new_state_index == -1){
-			//std::cout << "Final Value: " << knapsack.value << " Final weight: " << knapsack.weight << "\n";
-			std::cout << "Knapsack value: " << current_state.evaluate_state() << "\n";
+			std::cout << "[RESULT] Final value: " << current_state.evaluate_state()[0] << " final weight: " << current_state.evaluate_state()[1] << "\n";
+			std::cout << "[RESULT] Final state: " << current_state << "\n";
 			return;
 		};
-		//knapsack.value = knapsack.value + knapsack_instance.items[new_state_index].value;
-		//knapsack.weight = knapsack.weight + knapsack_instance.items[new_state_index].weight;
-		//std::cout << "Knapsack value: " << knapsack.value << " and weight: " << knapsack.weight << "\n";
+		//std::cout << "[INFO] Moved to state: " << current_state << "\n";
+		//std::cout << "[INFO] New state value: " << current_state.evaluate_state()[0] << " and weight: " << current_state.evaluate_state()[1] << "\n\n";
 	};
 };
 

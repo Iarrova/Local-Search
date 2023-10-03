@@ -46,7 +46,7 @@ class State{
 		std::vector<int> state;
 
 		State();
-		State(KnapsackInstance);
+		State(const KnapsackInstance& knapsack_instance);
 
 		/**
 		 * Evaluates the current state for the Knapsack problem
@@ -56,7 +56,7 @@ class State{
 		 * @return The current value of all the items in the Knapsack. 
 		 * 		If the weight exceeds the maximum returns -1.
 		*/
-		float evaluate_state();
+		std::vector<float> evaluate_state();
 
 		/**
 		 * Get the neighbours of the current state
@@ -80,5 +80,7 @@ class State{
 		*/
 		State generate_random_neighbour(RNG &rng);
 };
+
+std::ostream &operator<<(std::ostream &output, State const &m);
 
 #endif

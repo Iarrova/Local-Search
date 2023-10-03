@@ -29,7 +29,7 @@ class TabuSearchSolver{
         int number_of_steps;
     
     public:
-        TabuSearchSolver(KnapsackInstance knapsack_instance, int number_of_steps, int tabu_list_length);
+        TabuSearchSolver(const KnapsackInstance& knapsack_instance, int number_of_steps, int tabu_list_length);
         void solve();
 };
 

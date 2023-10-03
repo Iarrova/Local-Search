@@ -39,33 +39,33 @@ void KnapsackInstance::load_instance(std::string filename){
 
 State::State() = default;
 
-State::State(KnapsackInstance knapsack_instance){
+State::State(const KnapsackInstance& knapsack_instance){
 	// Initialize state as all 0's
 	this->knapsack_instance = knapsack_instance;
 	std::vector<int> state(knapsack_instance.NUMBER_OF_ITEMS, 0);
 	this->state = state;
 };
 
-float State::evaluate_state(){
-	int value = 0;
-	int weight = 0;
+std::vector<float> State::evaluate_state(){
+	std::vector<float> evaluation(2, 0.0);
 
 	// Calculate capacity and value of the current state knapsack
 	for(long unsigned i=0; i<state.size(); i++){
 		// Check if the item is currently in the knapsack
 		if (state[i] == 1){
 			// If it is, we consider its value and weight
-			value = value + knapsack_instance.items[i].value;
-			weight = weight + knapsack_instance.items[i].weight;
+			evaluation[0] = evaluation[0] + knapsack_instance.items[i].value;
+			evaluation[1] = evaluation[1] + knapsack_instance.items[i].weight;
 		};
 	};
 
 	// If capacity exceeds the maximum capacity, return -1 as it is an impossible solution
-	if (weight > knapsack_instance.MAX_WEIGHT){
-		return -1;
+	if (evaluation[1] > knapsack_instance.MAX_WEIGHT){
+		evaluation[0] = -1;
+		return evaluation;
 	};
 	// Else, we return the value of the knapsack
-	return value;
+	return evaluation;
 };
 
 std::vector<State> State::get_neighbours(){
@@ -88,7 +88,7 @@ void State::generate_random_state(RNG &rng){
 			state[i] = random_number;
 		};
 		// Check if solution is factible
-		if (evaluate_state() >= 0){
+		if (evaluate_state()[0] >= 0){
 			return;
 		};
 	};
@@ -100,8 +100,17 @@ State State::generate_random_neighbour(RNG &rng){
     while(true){
         int random_number = rng.get_random_number(knapsack_instance.NUMBER_OF_ITEMS - 1);
         neighbour_state.state[random_number] = 1 - neighbour_state.state[random_number];
-        if(neighbour_state.evaluate_state() >= 0){
+        if(neighbour_state.evaluate_state()[0] >= 0){
             return neighbour_state;
         };
     };
+};
+
+std::ostream &operator<<(std::ostream &output, State const &m){
+	output << "[";
+	for(int i=0; i < m.state.size(); i++){
+		output << m.state[i] << " ";
+	};
+	output << "]";
+	return output;
 };

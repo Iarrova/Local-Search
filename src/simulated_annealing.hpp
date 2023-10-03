@@ -16,7 +16,7 @@ class SimulatedAnnealingSolver{
         float temperature_factor;
     
     public:
-        SimulatedAnnealingSolver(KnapsackInstance knapsack_instance, int number_of_steps, int initial_temperature, float temperature_factor);
+        SimulatedAnnealingSolver(const KnapsackInstance& knapsack_instance, int number_of_steps, int initial_temperature, float temperature_factor);
         void solve();
 };
 
