@@ -106,15 +106,27 @@ void GeneticSolver::mutate(){
 
 void GeneticSolver::evaluate(){
     float evaluation;
+    float weight;
     for(int i=0; i<population_size; i++){
-        evaluation = population[i].evaluate_state()[0];
-        if(evaluation == -1){
-            population_fitness[i] = 0;
-            continue;
+        evaluation = 0;
+        weight = 0;
+        // Calculate capacity and value of the current state knapsack
+	    for(long unsigned j=0; j<population[i].state.size(); j++){
+		    // Check if the item is currently in the knapsack
+		    if (population[i].state[j] == 1){
+			    // If it is, we consider its value and weight
+			    evaluation = evaluation + knapsack_instance.items[j].value;
+			    weight = weight + knapsack_instance.items[j].weight;
+		    };
+	    };
+        if(weight > knapsack_instance.MAX_WEIGHT){
+            population_fitness[i] = evaluation - ((295 / 270) * (weight - knapsack_instance.MAX_WEIGHT));
+        }
+        else{
+            population_fitness[i] = evaluation;
         };
-        population_fitness[i] = evaluation;
     };
-}
+};
 
 void GeneticSolver::report(int generation){
     std::cout << "----- Report for generation " << generation << " -----\n";
@@ -122,6 +134,17 @@ void GeneticSolver::report(int generation){
         std::cout << population[i] << " --> " << population_fitness[i] << "\n";
     };
     std::cout << "\n";
+};
+
+void GeneticSolver::save_best(){
+    // Find index of the highest value in the population_fitness array
+    auto it = std::max_element(population_fitness.begin(), population_fitness.end());
+    int index = std::distance(population_fitness.begin(), it);
+    best_state = population[index];
+};
+
+void GeneticSolver::elitist(){
+    population[0] = best_state;
 };
 
 void GeneticSolver::solve(){

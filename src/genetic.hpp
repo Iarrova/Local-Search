@@ -20,12 +20,15 @@ class GeneticSolver{
         float crossover_probability;
         float mutation_probability;
 
+        State best_state;   // Used to elitist function
+
         void select();
         void crossover();
         void mutate();
         void evaluate();
         void report(int generation);
-        //void elitist();       TODO: Implement elitism
+        void save_best();
+        void elitist();
 
     public:
         GeneticSolver();
